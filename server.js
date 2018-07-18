@@ -13,11 +13,20 @@ function handler(request, response) {
   }).resume();
 }
 
+var drones = [];
+
 //start socket programming
 io.on('connection', function (socket) {
   
   //drone connected
   console.log(socket.id + " " + "connected");
+
+	//send updated info of all drones
+  socket.on('send-data', function (data) {
+    const drone = {...data, socketId: socket.id}
+    socket.emit('show-to-drone', data);
+    drones.push(drone);
+  });
 
   //disconnect drone
   socket.on('disconnect', function () {
