@@ -23,7 +23,7 @@ $(function() {
 		console.log('error.............');
 	}
 
-	//show only drone data at socket server or browser
+	// show only drone data at socket server or browser
 	socket.on('show-to-drone', function(data) {	
 		if ($(`#${data.droneId}`).length) {
 			$(`#${data.droneId}`).text(":>" + " " + "DroneId: " + data.droneId + " " + "Latitude: " + data.latitude + " " + "Longitude: " + data.longitude + " " + "speed: " + data.speed);
@@ -34,13 +34,44 @@ $(function() {
 		}
 	});
 
-	//show current position of drone 
+	// show all drone data at central server
+	socket.on('show', function(data) {	
+		if ($(`#${data.droneId}`).length) {
+			$(`#${data.droneId}`).text(":>" + " " + "DroneId: " + data.droneId + " " + "Latitude: " + data.latitude + " " + "Longitude: " + data.longitude + " " + "speed: " + data.speed);
+		}
+		else {
+			var para1 = $('<p>').attr('id', data.droneId).text(":>" + " " + "DroneId: " + data.droneId + " " + "Latitude: " + data.latitude + " " + "Longitude: " + data.longitude + " " + "speed: " + data.speed);
+			infoList.append(para1);
+		}
+	});
+
+	// show current position of drone 
 	function positionSuccess(position) {
 		var lat =  position.coords.latitude;
 		var lng =  position.coords.longitude;
 		var speed =  position.coords.speed;
 		var data  = {droneId: droneId, latitude: lat, longitude: lng, speed: speed};
 		socket.emit('send-data', data);
+	}
+
+	// drone tracking function
+	function getLocation() {
+		navigator.geolocation.watchPosition(matchPosition, positionError, options);
+	}
+
+	// highlight drone when its not moving more than 10 sec
+	function matchPosition(position) {
+		var lat =  position.coords.latitude;
+		var lng =  position.coords.longitude;
+		var speed =  position.coords.speed;
+		var data  = {droneId: droneId, latitude: lat, longitude: lng, speed: speed};
+		droneData.map(d => {
+			if(d.droneId === data.droneId && d.latitude === data.latitude && d.longitude === d.longitude){
+				$(`#${data.droneId}`).addClass('not-active');
+			} else {
+				socket.emit('send-update-data', data);
+			}
+		});
 	}
 
 	// handle geolocation api errors
@@ -53,6 +84,7 @@ $(function() {
 		showError('Error:' + errors[error.code]);
 	}
 
+	// show error function
 	function showError(msg) {
 		infobox.addClass('error').text(msg);
 
@@ -60,5 +92,10 @@ $(function() {
 			infobox.removeClass('error');
 		});
 	}
+
+	// match geolocation after every 10 sec.
+	setInterval(function(){
+		getLocation();
+	}, 10000);
 
 });

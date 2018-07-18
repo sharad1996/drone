@@ -21,13 +21,29 @@ io.on('connection', function (socket) {
   //drone connected
   console.log(socket.id + " " + "connected");
 
+	if(_.isEmpty(drones)){
+    central = socket.id;
+  }
+
+	//send starting geolocation
+  socket.on('send', function (data) {
+		socket.emit('load', data);
+  });
+
 	//send updated info of all drones
   socket.on('send-data', function (data) {
     const drone = {...data, socketId: socket.id}
     socket.emit('show-to-drone', data);
-    drones.push(drone);
+		drones.push(drone);
+		socket.broadcast.to(central).emit('show', data);
+	});
+	
+	//send new unmatch updated info of all drones
+  socket.on('send-update-data', function (data) {
+    socket.emit('show-to-drone', data);
+    socket.broadcast.to(central).emit('show', data);
   });
-
+  
   //disconnect drone
   socket.on('disconnect', function () {
     console.log(socket.id + " " + "disconnected");
