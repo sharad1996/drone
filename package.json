@@ -1,0 +1,18 @@
+{
+  "name": "drone-management-system",
+  "subdomain": "drone-management-system",
+  "author": "Mayank Saraf <msaraf222@gmail.com>",
+  "scripts": {
+    "start": "server.js"
+  },
+  "version": "0.0.3-1",
+  "engines": {
+    "node": ">= 0.8.x"
+  },
+  "dependencies": {
+    "geolocation": "^0.2.0",
+    "lodash": "^4.17.10",
+    "node-static": "latest",
+    "socket.io": "latest"
+  }
+}
