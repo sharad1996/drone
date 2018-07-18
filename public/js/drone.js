@@ -1,7 +1,7 @@
 $(function() {
 	// generate unique drone id
 	var droneId = Math.random().toString(16).substring(2,15);
-	var socket = io.connect('https://5ba803a7.ngrok.io');
+	var socket = io.connect('https://906c6483.ngrok.io');
 	var dronelist = $('#dronelist');
 	var infobox = $('infobox');
 	var connects = {}, droneData = [];
@@ -30,8 +30,8 @@ $(function() {
 			$(`#${data.droneId}`).text(":>" + " " + "DroneId: " + data.droneId + " " + "Latitude: " + data.latitude + " " + "Longitude: " + data.longitude + " " + "speed: " + data.speed);
 		}
 		else {
-			var para1 = $('<p>').attr('id', data.droneId).text(":>" + " " + "DroneId: " + data.droneId + " " + "Latitude: " + data.latitude + " " + "Longitude: " + data.longitude + " " + "speed: " + data.speed);
-			dronelist.append(para1);
+			var para = $('<p>').attr('id', data.droneId).text(":>" + " " + "DroneId: " + data.droneId + " " + "Latitude: " + data.latitude + " " + "Longitude: " + data.longitude + " " + "speed: " + data.speed);
+			dronelist.append(para);
 		}
 	});
 

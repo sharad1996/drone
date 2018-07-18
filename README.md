@@ -4,10 +4,10 @@ It is help you know how many drones are active and how many drones are inactive 
 
 A system watch your drones activeness if your drone not moveing for than 10 seconds so system highlight drone using droneId. DroneId is basically a unique number which is assign to every drone.
 
-
 # How to run
 - Extract the zip file:
 - cd drone-management-system
+- cd drone-management
 
 Run project using Docker:
 - docker build -t drone-management
