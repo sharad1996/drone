@@ -1,7 +1,7 @@
 $(function() {
 	// generate unique drone id
 	var droneId = Math.random().toString(16).substring(2,15);
-	var socket = io.connect('https://e7cc53b1.ngrok.io');
+	var socket = io.connect('https://5ba803a7.ngrok.io');
 	var dronelist = $('#dronelist');
 	var infobox = $('infobox');
 	var connects = {}, droneData = [];
@@ -86,23 +86,23 @@ $(function() {
 
 	// highlight drone when its not moving more than 10 sec
 	function matchPosition(position) {
-		var lat =  position.coords.latitude;
-		var lng =  position.coords.longitude;
-		var speed =  position.coords.speed;
-		var data  = {droneId: droneId, latitude: lat, longitude: lng, speed: speed};
+		var lat1 =  position.coords.latitude;
+		var lng1 =  position.coords.longitude;
+		var speed1 =  position.coords.speed;
+		var data1  = {droneId: droneId, latitude: lat1, longitude: lng1, speed: speed1};
 		droneData.map(d => {
-			if(d.droneId === data.droneId && d.latitude === data.latitude && d.longitude === d.longitude){
+			if(d.droneId === data1.droneId && d.latitude === data1.latitude && d.longitude === data1.longitude){
 				setInterval(function(){
-					$(`#${data.droneId}`).addClass('not-active');
+					$(`#${d.droneId}`).addClass('not-active');
 				}, 10000);
 			} else {
-				var coords = new google.maps.LatLng(lat, lng);
+				var coords = new google.maps.LatLng(lat1, lng1);
 				var mapOptions = {
 					zoom: 15,
 					center: coords,
 					mapTypeControl: true,
 					navigationControlOptions: {
-							style: google.maps.NavigationControlStyle.SMALL
+						style: google.maps.NavigationControlStyle.SMALL
 					},
 					mapTypeId: google.maps.MapTypeId.ROADMAP
 				};
@@ -114,10 +114,10 @@ $(function() {
 				var marker = new google.maps.Marker({
 					position: coords,
 					map: map,
-					title: "Your current location!"
+					title: "Drone current location!"
 				});
 
-				socket.emit('send-update-data', data);
+				socket.emit('send-update-data', data1);
 			}
 		});
 	}
