@@ -35,7 +35,8 @@ io.on('connection', function (socket) {
     const drone = {...data, socketId: socket.id}
     socket.emit('show-to-drone', data);
 		drones.push(drone);
-		socket.broadcast.to(central).emit('show', data);
+		console.log('drones',drones);
+		socket.broadcast.to(central).emit('show', data, drones);
 	});
 	
 	//send new unmatch updated info of all drones
