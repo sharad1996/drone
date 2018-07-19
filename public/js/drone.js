@@ -1,7 +1,7 @@
 $(function() {
 	// generate unique drone id
 	var droneId = Math.random().toString(16).substring(2,15);
-	var socket = io.connect('https://686d8f29.ngrok.io');
+	var socket = io.connect('https://604e82a7.ngrok.io');
 	var dronelist = $('#dronelist');
 	var infobox = $('infobox');
 	var connects = {}, droneData = [];
@@ -60,6 +60,7 @@ $(function() {
 	
 	// drone tracking function
 	function getLocation() {
+		navigator.geolocation.getCurrentPosition(positionSuccess, positionError, options);
 		navigator.geolocation.watchPosition(matchPosition, positionError, options);
 	}
 
@@ -68,7 +69,7 @@ $(function() {
 		var lat1 =  position.coords.latitude;
 		var lng1 =  position.coords.longitude;
 		var speed1 =  position.coords.speed;
-		var data1  = {droneId: droneId, latitude: lat1, longitude: lng1, speed: speed1};
+		var data  = {droneId: droneId, latitude: lat1, longitude: lng1, speed: speed1};
 		var coords = new google.maps.LatLng(lat1, lng1);
 		var mapOptions = {
 			zoom: 15,
@@ -84,13 +85,14 @@ $(function() {
 		);
 		var marker;
 		droneData.map(d => {
-			if(d.latitude === data1.latitude && d.longitude === data1.longitude){
+			if(d.droneId === data.droneId && d.latitude === data.latitude && d.longitude === data.longitude){
 				setInterval(function(){
 					$(`#${d.droneId}`).addClass('not-active');
 				}, 10000);
 			} else {
-				socket.emit('send-update-data', data1);
+				socket.emit('send-update-data', data);
 			}
+			console.log('drone...',d);
 			marker = new google.maps.Marker({
 				position: new google.maps.LatLng(d.latitude, d.longitude),
 				map: map
@@ -120,6 +122,6 @@ $(function() {
 	// match geolocation after every 10 sec.
 	setInterval(function(){
 		getLocation();
-	}, 10000);
+	}, 5000);
 
 });

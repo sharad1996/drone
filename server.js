@@ -32,9 +32,14 @@ io.on('connection', function (socket) {
 
 	//send updated info of all drones
   socket.on('send-data', function (data) {
-    const drone = {...data, socketId: socket.id}
+    const drone = {...data, socketId: socket.id};
     socket.emit('show-to-drone', data);
-		drones.push(drone);
+    let flag = drones.some(d=> {
+      return d.droneId === data.droneId;
+    });
+    console.log(flag)
+    if(!flag)
+      drones.push(drone);
 		console.log('drones',drones);
 		socket.broadcast.to(central).emit('show', data, drones);
 	});
@@ -47,6 +52,9 @@ io.on('connection', function (socket) {
   
   //disconnect drone
   socket.on('disconnect', function () {
+    let newDrones = [];
+    newDrones = drones.filter(d => d.socketId != socket.id);
+    drones = newDrones;
     console.log(socket.id + " " + "disconnected");
   });
 });
